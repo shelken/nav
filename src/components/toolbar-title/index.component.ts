@@ -1,4 +1,4 @@
-// Copyright @ 2018-2021 xiejiahe. All rights reserved. MIT license.
+// Copyright @ 2018-2022 xiejiahe. All rights reserved. MIT license.
 // See https://github.com/xjh22222228/nav
 
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core'
@@ -7,6 +7,7 @@ import { NzMessageService } from 'ng-zorro-antd/message'
 import { queryString, setWebsiteList } from '../../utils'
 import { getToken } from '../../utils/user'
 import { websiteList } from '../../store'
+import { $t } from 'src/locale'
 
 @Component({
   selector: 'app-toolbar-title',
@@ -38,10 +39,10 @@ export class ToolbarTitleWebComponent implements OnInit {
     const w = this.websiteList[page].nav[id].nav[this.index].nav
     const exists = w.some(item => item.name === payload.name)
     if (exists) {
-      return this.message.error('请不要重复添加')
+      return this.message.error($t('_repeatAdd'))
     }
     w.unshift(payload)
-    this.message.success('新增成功!')
+    this.message.success($t('_addSuccess'))
     setWebsiteList(this.websiteList)
     this.toggleCreateModal()
   }

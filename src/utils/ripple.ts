@@ -1,4 +1,4 @@
-// Copyright @ 2018-2021 xiejiahe. All rights reserved. MIT license.
+// Copyright @ 2018-2022 xiejiahe. All rights reserved. MIT license.
 
 import { annotate } from 'rough-notation'
 import { queryString } from './index'
@@ -28,7 +28,8 @@ export function setAnnotate(querySelector = '.top-nav .ripple-btn') {
     type: 'underline',
     color: '#f9826c',
     padding: 3,
-    strokeWidth: 3
+    strokeWidth: 3,
+    animationDuration: 150
   })
   ANNOTATE_EQUEUE.push(annotation)
   annotation.show()

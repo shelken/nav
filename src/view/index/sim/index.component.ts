@@ -1,9 +1,9 @@
-// Copyright @ 2018-2021 xiejiahe. All rights reserved. MIT license.
+// Copyright @ 2018-2022 xiejiahe. All rights reserved. MIT license.
 
 import config from '../../../../nav.config'
 import { Component } from '@angular/core'
 import { Router, ActivatedRoute } from '@angular/router'
-import { INavProps, INavThreeProp } from '../../../types'
+import { INavProps, INavThreeProp } from 'src/types'
 import {
   fuzzySearch,
   queryString,
@@ -11,12 +11,12 @@ import {
   toggleCollapseAll,
   totalWeb,
   matchCurrentList
-} from '../../../utils'
-import { isLogin } from '../../../utils/user'
-import { initRipple, setAnnotate } from '../../../utils/ripple'
-import { websiteList } from '../../../store'
+} from 'src/utils'
+import { isLogin } from 'src/utils/user'
+import { initRipple } from 'src/utils/ripple'
+import { websiteList } from 'src/store'
+import { settings } from 'src/store'
 
-const { gitRepoUrl, title, simThemeConfig } = config
 let sidebarEl: HTMLElement;
 
 @Component({
@@ -25,38 +25,43 @@ let sidebarEl: HTMLElement;
   styleUrls: ['./index.component.scss']
 })
 export default class SimComponent {
-
-  constructor (private router: Router, private activatedRoute: ActivatedRoute) {}
-
   websiteList: INavProps[] = websiteList
   currentList: INavThreeProp[] = []
   id: number = 0
   page: number = 0
-  gitRepoUrl: string = gitRepoUrl
-  title: string = title
-  posterImageUrls?: string = simThemeConfig.posterImageUrls[0]
-  description: string = simThemeConfig.description.replace('${total}', String(totalWeb()))
+  gitRepoUrl: string = config.gitRepoUrl
+  title: string = settings.title
+  simThemeImages = settings.simThemeImages
+  simThemeHeight = settings.simThemeHeight
+  simThemeAutoplay = settings.simThemeAutoplay
+  description: string = settings.simThemeDesc.replace('${total}', String(totalWeb()))
   isLogin = isLogin
+  sliceMax = 1
+
+  constructor (private router: Router, private activatedRoute: ActivatedRoute) {}
 
   ngOnInit() {
     this.activatedRoute.queryParams.subscribe(() => {
-      const tempPage = this.page
       const { id, page, q } = queryString()
       this.page = page
       this.id = id
+      this.sliceMax = 1
 
       if (q) {
         this.currentList = fuzzySearch(this.websiteList, q)
       } else {
         this.currentList = matchCurrentList()
       }
-
-      if (tempPage !== page) {
-        setAnnotate()
-      }
-
-      setWebsiteList(this.websiteList)
+      setTimeout(() => {
+        this.sliceMax = Number.MAX_SAFE_INTEGER
+      }, 100)
     })
+  }
+
+  handleJumpUrl(data) {
+    if (data.url) {
+      window.open(data.url)
+    }
   }
 
   onScroll = () => {
@@ -66,7 +71,7 @@ export default class SimComponent {
     }
 
     if (sidebarEl) {
-      const height = this.posterImageUrls ? 438 : 10
+      const height = settings.simThemeHeight + 138
       if (y >= height) {
         sidebarEl.classList.add('fix')
       } else {
@@ -81,8 +86,6 @@ export default class SimComponent {
 
   ngAfterViewInit() {
     initRipple()
-    setAnnotate();
-
     window.addEventListener('scroll', this.onScroll)
   }
 

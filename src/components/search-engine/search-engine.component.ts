@@ -1,4 +1,4 @@
-// Copyright @ 2018-2021 xiejiahe. All rights reserved. MIT license.
+// Copyright @ 2018-2022 xiejiahe. All rights reserved. MIT license.
 
 import hotkeys from 'hotkeys-js'
 import { Component } from '@angular/core'
@@ -7,6 +7,7 @@ import { Router } from '@angular/router'
 import * as searchEngineList from '../../../data/search.json'
 import { ISearchEngineProps } from '../../types'
 import { SearchType } from './index'
+import { $t } from 'src/locale'
 
 @Component({
   selector: 'app-search-engine',
@@ -14,6 +15,7 @@ import { SearchType } from './index'
   styleUrls: ['./search-engine.component.scss']
 })
 export class SearchEngineComponent {
+  $t = $t
   searchEngineList: ISearchEngineProps[] = (searchEngineList as any).default
   currentEngine: ISearchEngineProps = getDefaultSearchEngine()
   SearchType = SearchType

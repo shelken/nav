@@ -1,4 +1,4 @@
-// Copyright @ 2018-2021 xiejiahe. All rights reserved. MIT license.
+// Copyright @ 2018-2022 xiejiahe. All rights reserved. MIT license.
 
 import axios from 'axios'
 import NProgress from 'nprogress'
@@ -6,7 +6,7 @@ import { getToken } from '../utils/user'
 
 const token = getToken()
 const DEFAULT_TITLE = document.title
-const headers: {[k: string]: string} = {}
+const headers: Record<string, string> = {}
 
 if (token) {
   headers.Authorization = `token ${token}`

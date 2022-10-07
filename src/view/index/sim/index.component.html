@@ -1,8 +1,29 @@
 <div class="sim">
-  <div *ngIf="posterImageUrls" class="wallpaper" [ngStyle]="{ 'background-image': 'url(' + posterImageUrls + ')' }">
-    <h1 class="title dark-title">{{ title }}</h1>
-    <h2 class="description dark-text-active" [innerHTML]="description"></h2>
-    <app-search-engine></app-search-engine>
+  <div class="wallpaper" [ngStyle]="{height: simThemeHeight + 'px'}">
+    <div class="bg">
+      <nz-carousel
+        nzEffect="scrollx"
+        [nzAutoPlay]="simThemeAutoplay"
+        [nzDots]="simThemeImages.length > 1"
+        [nzEnableSwipe]="simThemeImages.length > 1"
+        [nzAutoPlaySpeed]="5000"
+      >
+        <div
+          class="bg-item"
+          nz-carousel-content
+          *ngFor="let item of simThemeImages"
+          [ngStyle]="{ 'background-image': 'url(' + item.src + ')' }"
+          (click)="handleJumpUrl(item)"
+        >
+        </div>
+      </nz-carousel>
+    </div>
+
+    <div class="bar">
+      <h1 class="title dark-title">{{ title }}</h1>
+      <h2 class="description dark-text-active" [innerHTML]="description"></h2>
+      <app-search-engine></app-search-engine>
+    </div>
   </div>
 
   <nav class="top-nav user-select-none dark-border-color">
@@ -36,7 +57,7 @@
 
     <aside class="site-box dark-bg">
       <div *ngIf="currentList.length > 0; else noData">
-        <div *ngFor="let item of currentList; let i=index">
+        <div *ngFor="let item of currentList.slice(0, sliceMax); let i=index">
           <div class="nav-wrapper">
             <app-toolbar-title [dataSource]="item" (onCollapse)="onCollapse(item, i)" [index]="i"></app-toolbar-title>
   
@@ -45,10 +66,10 @@
                 class="gutter-row"
                 nz-col
                 [nzSpan]="8"
-                *ngFor="let el of item.nav; let idx=index"
+                *ngFor="let el of item.nav.slice(0, sliceMax); let idx=index; let i=j"
                 [class.remove]="!isLogin && el.ownVisible"
               >
-                <app-card [dataSource]="el"></app-card>
+                <app-card [dataSource]="el" [indexs]="[page, id, i, j]"></app-card>
               </div>
             </div>
           </div>

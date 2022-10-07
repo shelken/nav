@@ -1,4 +1,4 @@
-// Copyright @ 2018-2021 xiejiahe. All rights reserved. MIT license.
+// Copyright @ 2018-2022 xiejiahe. All rights reserved. MIT license.
 // See https://github.com/xjh22222228/nav
 
 import qs from 'qs'
@@ -15,7 +15,6 @@ import { SearchType } from '../components/search-engine/index'
 
 export const websiteList: INavProps[] = getWebsiteList()
 
-let total = 0
 const searchEngineList: ISearchEngineProps[] = (s as any).default
 
 export function randomInt(max: number) {
@@ -23,6 +22,10 @@ export function randomInt(max: number) {
 }
 
 export function fuzzySearch(navList: INavProps[], keyword: string): INavThreeProp[] {
+  if (!keyword.trim()) {
+    return []
+  }
+
   const { type, page, id } = queryString()
   const sType = Number(type) || SearchType.Title
   const navData = []
@@ -51,6 +54,7 @@ export function fuzzySearch(navList: INavProps[], keyword: string): INavThreePro
           if (name.includes(search)) {
             let result = { ...item }
             const regex = new RegExp(`(${keyword})`, 'i')
+            result.__name__ = result.name
             result.name = result.name.replace(regex, `$1`.bold())
 
             if (!urlRecordMap[result.url]) {
@@ -85,6 +89,7 @@ export function fuzzySearch(navList: INavProps[], keyword: string): INavThreePro
           if (desc.includes(search)) {
             let result = { ...item }
             const regex = new RegExp(`(${keyword})`, 'i')
+            result.__desc__ = result.desc
             result.desc = result.desc.replace(regex, `$1`.bold())
 
             if (!urlRecordMap[result.url]) {
@@ -136,10 +141,11 @@ export function fuzzySearch(navList: INavProps[], keyword: string): INavThreePro
 }
 
 export function totalWeb(): number {
-  if (total) {
-    return total
+  const localTotal = localStorage.getItem(STORAGE_KEY_MAP.total)
+  if (localTotal) {
+    return Number(localTotal)
   }
-
+  let total = 0
   function r(nav) {
     if (!Array.isArray(nav)) return
 
@@ -153,7 +159,7 @@ export function totalWeb(): number {
     }
   }
   r(websiteList)
-
+  localStorage.setItem(STORAGE_KEY_MAP.total, String(total))
   return total
 }
 
@@ -216,13 +222,16 @@ export function queryString(): {
   }
 
   if (page > websiteList.length - 1) {
-    page = websiteList.length - 1;
-    id = 0;
+    page = 0
+    id = 0
   } else {
-    if (!(id <= websiteList[page].nav.length - 1)) {
-      id = websiteList[page].nav.length - 1;
+    if (websiteList[page] && !(id <= websiteList[page].nav.length - 1)) {
+      id = websiteList[page].nav.length - 1
     }
   }
+
+  page = page < 0 ? 0 : page
+  id = id < 0 ? 0 : id
 
   return {
     ...parseQs,
@@ -240,6 +249,9 @@ export function adapterWebsiteList(websiteList: any[], parentItem?: any) {
     item.createdAt ||= createdAt
 
     if (Array.isArray(item.nav)) {
+      if (item.nav[0]?.url) {
+        item.nav = item.nav.filter(item => !item.ownVisible || isLogin)
+      }
       adapterWebsiteList(item.nav, item)
     }
 

@@ -1,4 +1,4 @@
-// Copyright @ 2018-2021 xiejiahe. All rights reserved. MIT license.
+// Copyright @ 2018-2022 xiejiahe. All rights reserved. MIT license.
 // See https://github.com/xjh22222228/nav
 
 export type ThemeType =
@@ -8,12 +8,17 @@ export type ThemeType =
   | 'App'
   | 'Shortcut'
 
+
+export interface ITagPropValues {
+  name?: string
+  color: string
+  createdAt: string
+  desc: string
+  isInner: boolean
+}
+
 export interface ITagProp {
-  [tagName: string]: {
-    color: string
-    createdAt: string
-    desc?: string
-  }
+  [tagName: string]: ITagPropValues
 }
 
 export interface INavFourProp {
@@ -38,6 +43,7 @@ export interface INavThreeProp {
   collapsed?: boolean
   ownVisible?: boolean
   nav: INavFourProp[]
+  [key: string]: any
 }
 
 export interface INavTwoProp {
@@ -47,6 +53,7 @@ export interface INavTwoProp {
   collapsed?: boolean
   ownVisible?: boolean
   nav: INavThreeProp[]
+  [key: string]: any
 }
 
 export interface INavProps extends Object {
@@ -56,6 +63,7 @@ export interface INavProps extends Object {
   createdAt?: string
   ownVisible?: boolean
   nav: INavTwoProp[]
+  [key: string]: any
 }
 
 export interface ISearchEngineProps {
@@ -64,25 +72,44 @@ export interface ISearchEngineProps {
   icon: string | null
   placeholder?: string
   blocked: boolean
+  isInner: boolean
+}
+
+export interface ISettings {
+  favicon: string
+  language: 'zh-CN' | 'en'
+  loading: string
+  homeUrl?: string
+  title: string
+  description: string
+  keywords: string
+  theme: ThemeType
+  appTheme: ThemeType
+  footerContent?: string|null
+  baiduStatisticsUrl?: string
+  cnzzStatisticsUrl?: string
+  iconfontUrl?: string
+  showGithub: boolean
+  showLanguage: boolean
+
+  simThemeImages: Record<string, string>[]
+  simThemeDesc: string
+  simThemeHeight: number
+  simThemeAutoplay: boolean
+
+  sideThemeImages: Record<string, string>[]
+  sideThemeHeight: number
+  sideThemeAutoplay: boolean
+
+  shortcutThemeImages: Record<string, string>[]
+  shortcutThemeShowWeather: boolean
+
+  showRate: boolean
+  mirrorList: Record<string, string>[]
 }
 
 export interface IConfig {
   gitRepoUrl: string
   branch: string
   hashMode: boolean
-  homeUrl?: string
-  title: string
-  description: string
-  keywords: string
-  theme: ThemeType
-  footerContent?: string|null
-  baiduStatisticsUrl?: string
-  cnzzStatisticsUrl?: string
-  iconfontUrl?: string
-  showGithub: boolean
-
-  simThemeConfig: {
-    posterImageUrls: string[]
-    description: string
-  }
 }
